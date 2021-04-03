@@ -6,3 +6,9 @@ Django
 Travis
 Pyup
 Coverage
+
+Para conferir qualidade do codigo:
+
+```console
+flake8
+```
