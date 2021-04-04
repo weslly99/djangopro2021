@@ -13,5 +13,5 @@ Coverage
 Para conferir qualidade do codigo:
 
 ```console
-flake8
+pipenv run flake8
 ```
