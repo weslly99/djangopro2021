@@ -3,11 +3,12 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.utils.translation import gettext as _
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """
-    App base User class.
-
-    email and password are required. Other fields are optional.
+        App base User class.
+        email and password are required. Other fields are optional.
     """
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
     email = models.EmailField(_('email address'), unique=True)
@@ -26,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
-  #  objects = UserManager()
+    # objects = UserManager()
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
@@ -54,4 +55,3 @@ class User(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
-
