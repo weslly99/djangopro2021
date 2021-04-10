@@ -1,8 +1,38 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.utils.translation import gettext as _
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_user(self, email, password, **extra_field):
+        if not email:
+            raise ValueError("The given email must be set")
+        email = self.normalize_email(email=email)
+        user = self.model(email=email, **extra_field)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_field):
+        extra_field.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_field)
+
+    def create_superuser(self, email, password=None, **extra_field):
+        extra_field.setdefault('is_superuser', True)
+        extra_field.setdefault('is_staff', True)
+
+        if extra_field.get('is_superuser') is not True:
+            raise ValueError('Super user must have is_superuser = True')
+        if extra_field.get('is_staff') is not True:
+            raise ValueError('Super user must have is_staff = True')
+
+        return self._create_user(email, password, **extra_field)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -27,7 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
-    # objects = UserManager()
+    objects = UserManager()
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
