@@ -34,7 +34,7 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_field)
 
-      
+
 class User(AbstractBaseUser, PermissionsMixin):
     """
         App base User class.
