@@ -67,3 +67,7 @@ target/
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 **/.history
+
+
+##database sqlite3
+*.sqlite3
