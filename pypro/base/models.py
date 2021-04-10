@@ -1,5 +1,7 @@
 from django.db import models
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.utils.translation import gettext as _
@@ -32,7 +34,7 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_field)
 
-
+      
 class User(AbstractBaseUser, PermissionsMixin):
     """
         App base User class.
