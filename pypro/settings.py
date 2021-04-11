@@ -86,7 +86,7 @@ DATABASES = {
 if config("DATABASE_URL",default=None):
     print(config("DATABASE_URL"))
 else:
-    print("Banco não configurado")
+    print("Banco não configurado -------")
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
