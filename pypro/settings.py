@@ -83,6 +83,10 @@ parse_database = partial(dj_database_url.parse, conn_max_age=600)
 DATABASES = {
     "default": config("DATABASE_URL", default=default_db_url, cast=parse_database)
 }
+if config("DATABASE_URL",default=None):
+    print(config("DATABASE_URL"))
+else:
+    print("Banco não configurado")
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
