@@ -13,6 +13,8 @@ from functools import partial
 import dj_database_url
 from pathlib import Path
 from decouple import config, Csv
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,10 +85,11 @@ parse_database = partial(dj_database_url.parse, conn_max_age=600)
 DATABASES = {
     "default": config("DATABASE_URL", default=default_db_url, cast=parse_database)
 }
-if config("DATABASE_URL", default=None):
-    print(config("DATABASE_URL"))
-else:
-    print("Banco não configurado -------")
+
+INTERNAL_IPS = config('INTERNAL_IPS',cast=Csv(), default="127.0.0.1")
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -135,7 +138,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 COLLECTFAST_ENABLED = False
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default=None)
 
 # Configuração para o S3 AWS
 # -----------------------------------------------------------
@@ -171,3 +174,12 @@ if AWS_ACCESS_KEY_ID:
 
     INSTALLED_APPS.append('s3_folder_storage')
     INSTALLED_APPS.append('storages')
+    
+SENTRY_DSN = config("SENTRY_DSN", default=None)
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn= SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+        send_default_pii=True
+    )
